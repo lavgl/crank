@@ -13,20 +13,8 @@
   (-> (InetAddress/getLocalHost) .getHostName (str/split #"\.") first))
 
 
-(defn make-consumer-config [config]
-  (cond-> {"bootstrap.servers"  (:uri config)
-           "group.id"           (:group config)
-           "max.poll.records"   (int (:batch-size config 10000))
-           "auto.offset.reset"  "latest"
-           "enable.auto.commit" false
-           "key.deserializer"   ByteArrayDeserializer
-           "value.deserializer" ByteArrayDeserializer}
-    (:batch-bytes config)
-    (assoc "fetch.max.bytes" (int (:batch-bytes config)))))
-
-
 (defn make-consumer [config]
-  (KafkaConsumer. (make-consumer-config config)))
+  (KafkaConsumer. config))
 
 
 ;;; Utility helpers
